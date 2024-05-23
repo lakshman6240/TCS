@@ -1,0 +1,20 @@
+{
+	"name": "3_explore_vendor",
+	"properties": {
+		"folder": {
+			"name": "nyc_taxi/discover"
+		},
+		"content": {
+			"query": "use nyc_taxi_database;\n\n-- unquoted\nSELECT * from \nOPENROWSET(\n    BULK 'vendor_unquoted.csv',\n    DATA_SOURCE = 'nyc_taxi_raw',\n    FORMAT = 'CSV',\n    PARSER_VERSION = '2.0',\n    HEADER_ROW = TRUE\n)\nAS VENDOR;\n\n-- escaping character\nSELECT * from \nOPENROWSET(\n    BULK 'vendor_escaped.csv',\n    DATA_SOURCE = 'nyc_taxi_raw',\n    FORMAT = 'CSV',\n    PARSER_VERSION = '2.0',\n    HEADER_ROW = TRUE,\n    ESCAPECHAR = '\\\\'\n)\nAS vendor;\n\n-- using field terminator\nSELECT * FROM\nOPENROWSET(\n    BULK 'vendor.csv',\n    DATA_SOURCE = 'nyc_taxi_raw',\n    FORMAT = 'CSV',\n    PARSER_VERSION = '2.0',\n    FIELDQUOTE = '\"'\n)\nas vendor",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "nyc_taxi_database",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

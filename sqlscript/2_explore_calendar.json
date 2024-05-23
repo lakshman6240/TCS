@@ -1,0 +1,20 @@
+{
+	"name": "2_explore_calendar",
+	"properties": {
+		"folder": {
+			"name": "nyc_taxi/discover"
+		},
+		"content": {
+			"query": "use nyc_taxi_database;\n\nEXEC sp_describe_first_result_set N'\nSELECT * FROM\nOPENROWSET(\n    BULK ''calendar.csv'',\n    DATA_SOURCE = ''nyc_taxi_raw'',\n    FORMAT = ''CSV'',\n    PARSER_VERSION = ''2.0'',\n    HEADER_ROW = TRUE\n)as cal'\n\nSELECT * FROM\nOPENROWSET(\n    BULK 'calendar.csv',\n    DATA_SOURCE = 'nyc_taxi_raw',\n    FORMAT = 'CSV',\n    PARSER_VERSION = '2.0',\n    HEADER_ROW = TRUE\n)\nWITH(\n    date_key    int,\n    date        date,\n    year        smallint,\n    month       smallint,\n    day         smallint,\n    day_name    VARCHAR(10),\n    day_of_year smallint,\n    week_of_month TINYINT,\n    week_of_year TINYINT,\n    month_name  VARCHAR(10)\n)\nas cal;\n\nEXEC sp_describe_first_result_set N'\nSELECT * FROM\nOPENROWSET(\n    BULK ''calendar.csv'',\n    DATA_SOURCE = ''nyc_taxi_raw'',\n    FORMAT = ''CSV'',\n    PARSER_VERSION = ''2.0'',\n    HEADER_ROW = TRUE\n)\nWITH(\n    date_key    int,\n    date        date,\n    year        smallint,\n    month       smallint,\n    day         smallint,\n    day_name    VARCHAR(10),\n    day_of_year smallint,\n    week_of_month TINYINT,\n    week_of_year TINYINT,\n    month_name  VARCHAR(10)\n)\nas cal\n'",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "nyc_taxi_database",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

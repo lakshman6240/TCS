@@ -1,0 +1,20 @@
+{
+	"name": "1_explore_taxi_zone",
+	"properties": {
+		"folder": {
+			"name": "nyc_taxi/discover"
+		},
+		"content": {
+			"query": "-- This is auto-generated code\n\n-- using HTTPS\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://synapselearningdl.dfs.core.windows.net/nyc-taxi/raw/taxi_zone.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0'\n    ) AS [result]\n\n\n-- using abfss\n\nSELECT TOP 100 *\nFROM\nOPENROWSET(\n    BULK 'abfss://nyc-taxi@synapselearningdl.dfs.core.windows.net/raw/taxi_zone.csv',\n    FORMAT = 'CSV',\n    PARSER_VERSION = '2.0',\n    HEADER_ROW = True,\n    FIELDTERMINATOR = ',',\n    ROWTERMINATOR = '\\n'\n) AS [res]\n\n-- exploring data types\n\nEXEC sp_describe_first_result_set N'\nSELECT TOP 100 *\nFROM\nOPENROWSET(\n    BULK ''abfss://nyc-taxi@synapselearningdl.dfs.core.windows.net/raw/taxi_zone.csv'',\n    FORMAT = ''CSV'',\n    PARSER_VERSION = ''2.0'',\n    HEADER_ROW = True\n) AS [res]\n'\n\nSELECT \nMAX(LEN(LocationID)),\nMAX(Len(Borough)),\nmax(len(Zone)),\nmax(len(service_zone))\nFROM\nOPENROWSET(\n    BULK 'abfss://nyc-taxi@synapselearningdl.dfs.core.windows.net/raw/taxi_zone.csv',\n    FORMAT = 'CSV',\n    PARSER_VERSION = '2.0',\n    HEADER_ROW = True,\n    FIELDTERMINATOR = ',',\n    ROWTERMINATOR = '\\n'\n) AS [res]\n\nSELECT * from \nOPENROWSET(\n    BULK 'abfss://nyc-taxi@synapselearningdl.dfs.core.windows.net/raw/taxi_zone.csv',\n    FORMAT = 'CSV',\n    PARSER_VERSION = '2.0',\n    Header_Row = True\n)\nwith(\n    LocationID SMALLINT ,\n    Borough VARCHAR(15),\n    Zone VARCHAR(50),\n    service_zone VARCHAR(15)\n)\n as [result]\n\n -- collating with in the column level\n\n SELECT * from \nOPENROWSET(\n    BULK 'abfss://nyc-taxi@synapselearningdl.dfs.core.windows.net/raw/taxi_zone.csv',\n    FORMAT = 'CSV',\n    PARSER_VERSION = '2.0',\n    Header_Row = True\n)\nwith(\n    LocationID SMALLINT,\n    Borough VARCHAR(15) COLLATE Latin1_General_100_CI_AI_SC_UTF8,\n    Zone VARCHAR(50) COLLATE Latin1_General_100_CI_AI_SC_UTF8,\n    service_zone VARCHAR(15) COLLATE Latin1_General_100_CI_AI_SC_UTF8\n)\n as [result]\n\n-- collating entire database\n\n SELECT name, collation_name from sys.databases;\n\n CREATE DATABASE nyc_taxi_database;\n\n use nyc_taxi_database;\n\n ALTER DATABASE nyc_taxi_database COLLATE Latin1_General_100_CI_AI_SC_UTF8;\n\n SELECT * from \nOPENROWSET(\n    BULK 'abfss://nyc-taxi@synapselearningdl.dfs.core.windows.net/raw/taxi_zone.csv',\n    FORMAT = 'CSV',\n    PARSER_VERSION = '2.0',\n    Header_Row = True\n)\nwith(\n    LocationID SMALLINT ,\n    Borough VARCHAR(15),\n    Zone VARCHAR(50),\n    service_zone VARCHAR(15)\n)\n as [result]\n\n -- assigning column names\n\n  SELECT * from \nOPENROWSET(\n    BULK 'abfss://nyc-taxi@synapselearningdl.dfs.core.windows.net/raw/taxi_zone_without_header.csv',\n    FORMAT = 'CSV',\n    PARSER_VERSION = '2.0'\n)\nwith(\n    LocationID SMALLINT 1,\n    Borough VARCHAR(15) 2,\n    Zone VARCHAR(50) 3,\n    service_zone VARCHAR(15) 4\n)\n as [result]\n\n -- skipping the rows\n\n  SELECT * from \nOPENROWSET(\n    BULK 'abfss://nyc-taxi@synapselearningdl.dfs.core.windows.net/raw/taxi_zone.csv',\n    FORMAT = 'CSV',\n    PARSER_VERSION = '2.0',\n    FIRSTROW = 2\n)\nwith(\n    LocationID SMALLINT 1,\n    Borough VARCHAR(15) 2,\n    Zone VARCHAR(50) 3,\n    service_zone VARCHAR(15) 4\n)\n as [result]\n\n -- external data source\n CREATE EXTERNAL DATA SOURCE nyc_taxi_raw\n WITH(\n    LOCATION = 'abfss://nyc-taxi@synapselearningdl.dfs.core.windows.net/raw'\n )\n\nSELECT * from \nOPENROWSET(\n    BULK 'taxi_zone.csv',\n    DATA_SOURCE = 'nyc_taxi_raw',\n    FORMAT = 'CSV',\n    PARSER_VERSION = '2.0',\n    FIRSTROW = 2\n)\nwith(\n    LocationID SMALLINT 1,\n    Borough VARCHAR(15) 2,\n    Zone VARCHAR(50) 3,\n    service_zone VARCHAR(15) 4\n)\n as [result]\n\n\nSELECT name, location from sys.external_data_sources",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "nyc_taxi_database",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
